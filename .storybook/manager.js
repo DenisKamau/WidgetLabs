@@ -5,10 +5,10 @@ import { create } from "@storybook/theming/create";
 
 addons.setConfig({
   theme: create({
-    base: "dark", // or 'dark' depending on your preference
+    base: "dark", // or 'light' depending on your preference
     brandTitle: "WidgetLab",
     brandUrl: "/",
-    brandImage: "../src/logo-light.png", // Ensure this matches the path to your logo
+    brandImage: "/images/logo-light.png",
   }),
 });
 
