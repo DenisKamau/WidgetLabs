@@ -1,73 +1,87 @@
 export const createButton = ({
-  useAlpine = false,
-  variant,
-  size = "medium",
-  backgroundColor = "",
-  hoverBackgroundColor = "",
-  textColor = "",
-  label = "Button",
-  borderRadius = "rounded-md",
-  border = "border",
-  onClick,
+  label = 'Button',
+  variant = 'primary',
+  size = 'medium',
+  // backgroundColor = '',
+  // hoverBackgroundColor = '',
+  // textColor = '',
+  // hoverTextColor = '',
+  borderRadius = 'rounded-md',
+  border = 'border',
+  disabled = false,
+  loading = false,
+  icon = null,
+  onClick = null,
+  classNames = '',
+  styles = {}, // Inline styles prop
+  type = 'button', // can be 'button' or 'link'
+  href = '#',
 }) => {
-  const btn = document.createElement("button");
-  btn.type = "button";
-  btn.innerText = label;
+  const baseClasses = 'inline-block text-sm font-semibold capitalize flex gap-x-2 items-center justify-center whitespace-nowrap';
 
-  const handleClick = (event) => {
-    if (onClick) {
-      onClick(event);
-    }
-  };
+  const sizeClass = size === 'small' ? 'py-2 px-4 text-xs' : size === 'large' ? 'py-3 px-6 text-lg' : 'py-2 px-4';
 
-  btn.addEventListener("click", handleClick);
+  const variantClass = {
+    primary: 'primary-btn',
+    secondary: 'secondary-btn',
+    outlined: 'outlined-btn',
+    error: 'error-btn',
+    link: 'link',
+    ghost: 'ghost-btn',
+  }[variant] || 'primary-btn';
 
-  // Determine button mode based on variant
-  const mode =
-    variant === "primary"
-      ? "bg-[#7F56D9]"
-      : variant === "secondary"
-      ? "bg-gray-300"
-      : variant === "tertiary"
-      ? "bg-gray-800"
-      : "";
+  // Commenting out the Tailwind-compatible class application for colors
+  // const bgClass = backgroundColor ? `bg-[${backgroundColor}]` : '';
+  // const hoverBgClass = hoverBackgroundColor ? `hover:bg-[${hoverBackgroundColor}]` : '';
+  // const textClass = textColor ? `text-[${textColor}]` : '';
+  // const hoverTextClass = hoverTextColor ? `hover:text-[${hoverTextColor}]` : '';
 
-  // Determine button size class based on size
-  const sizeClass = size === "small" ? "px-2 py-1 text-sm" : size === "large" ? "px-6 py-3 text-lg" : "px-4 py-2.5";
+  const buttonClasses = [
+    baseClasses,
+    sizeClass,
+    variantClass,
+    // bgClass,
+    // hoverBgClass,
+    // textClass,
+    // hoverTextClass,
+    borderRadius,
+    border,
+    disabled ? 'disabled-btn' : '',
+    classNames,
+    'transition', 'duration-200', 'ease-in-out',
+  ].filter(Boolean).join(' ');
 
-  // Determine background color class
-  const bgColorClass = backgroundColor ? (backgroundColor.startsWith("#") ? "" : backgroundColor) : mode;
+  const buttonElement = document.createElement(type === 'link' ? 'a' : 'button');
+  buttonElement.className = buttonClasses;
+  buttonElement.innerText = label;
 
-  // Determine hover background color class
-  const hoverBgColorClass = hoverBackgroundColor
-    ? hoverBackgroundColor.startsWith("#")
-      ? `hover:bg-[${hoverBackgroundColor.slice(1)}]`
-      : `hover:${hoverBackgroundColor}`
-    : `hover:${hoverBackgroundColor}`;
+  // Apply inline styles
+  Object.assign(buttonElement.style, styles);
 
-  // Build class list
-  const classList = ["inline-block", sizeClass, border, bgColorClass, textColor, borderRadius, hoverBgColorClass];
-
-  // Apply base classes and styles
-  btn.className = classList.join(" ");
-
-  // Apply background color (HEX)
-  if (backgroundColor.startsWith("#")) {
-    btn.style.backgroundColor = backgroundColor;
+  if (icon) {
+    const iconElement = document.createElement('i');
+    iconElement.className = icon;
+    buttonElement.prepend(iconElement);
   }
 
-  // Apply hover background color (HEX)
-  if (hoverBackgroundColor.startsWith("#")) {
-    btn.style.setProperty("--hover-bg", hoverBackgroundColor);
-    btn.classList.add(`hover:bg-[var(--hover-bg)]`);
+  if (disabled) {
+    buttonElement.disabled = true;
   }
 
-  // Alpine.js functionality (if needed)
-  if (useAlpine) {
-    btn.setAttribute("x-data", "{ isActive: false }");
-    btn.setAttribute("x-bind:class", `{'bg-blue-500 text-white': isActive, 'bg-gray-300 text-gray-800': !isActive}`);
-    btn.setAttribute("x-on:click", "isActive = !isActive");
+  if (type === 'link') {
+    buttonElement.href = href;
+    buttonElement.setAttribute('role', 'button');
   }
 
-  return btn;
+  if (loading) {
+    const loader = document.createElement('span');
+    loader.className = 'loader'; // Define loader class as needed
+    buttonElement.appendChild(loader);
+  }
+
+  if (onClick && !disabled) {
+    buttonElement.addEventListener('click', onClick);
+  }
+
+  return buttonElement;
 };

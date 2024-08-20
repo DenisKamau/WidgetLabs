@@ -30,10 +30,13 @@
     "vite-plugin-html": "^3.2.2"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.1.5",
     "@mdx-js/rollup": "^3.0.1",
     "@storybook/addon-controls": "^8.2.6",
     "@storybook/addon-docs": "^8.2.6",
     "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/addons": "^7.6.17",
+    "@storybook/theming": "^8.2.9",
     "alpinejs": "^3.14.0"
   }
 }
